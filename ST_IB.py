@@ -8,15 +8,15 @@ popArr = np.loadtxt('popdata.txt',delimiter=',')
 # disArr = np.loadtxt('casdata.txt',delimiter=',')
 
 # read input point file
-disFile = open('casdata.txt', "r")
-#disFile = open('AllCases2010_11_clip.txt', "r")
+# disFile = open('casdata.txt', "r")
+disFile = open('AllCases2010_11_clip.txt', "r")
 inXY, inT = [], []
 for record in disFile:
-    inXY.append([float(record.split(",")[0]),float(record.split(",")[1])])
-    inT.append([float(record.split(",")[2])])
+    inXY.append([float(record.split("\t")[0]),float(record.split("\t")[1])])
+    inT.append([float(record.split("\t")[2])])
 disFile.close()
 numPts = len(inXY)
-# numPts = 10
+
 #grid points
 # grdArr =
 
@@ -26,8 +26,8 @@ disTreeS = spatial.cKDTree(inXY)
 disTreeT = spatial.cKDTree(inT)
 
 #initialize variables
-neighSTIndex = []    #stores indexes of spatiotemporal neighbors
-mNN = np.inf        #minimum number of neighbors
+neighSIndex = []    #stores indexes of spatiotemporal neighbors
+minLength = np.inf  #minimum number of neighbors
 i = 0               # iterator variable
 
 #loop through all data points
@@ -42,35 +42,29 @@ while i < numPts:
     neighT = disTreeT.query(ptsT,15)
 
     #intersect spatial and temporal neighbors
-    neighST = np.intersect1d(neighS[1], neighT[1])  #indices
-    
+    a = list(neighS[1])
+    b = set(list(neighT[1]))
+    c = [i for i, item in enumerate(a) if item in b]    #indexes for neighS
 
-    # print(neighST)
+    print(a, b, c)
 
-    neighSTIndex.append(neighST)
+    neighSIndex.append(c)
 
     #keep track of minimum number of spatiotemporal neighbors
-    nSTN = neighST.size #number of space-time neighbors
-    if nSTN < mNN:
-        mNN = nSTN
+    if len(c) < minLength:
+        minLength = len(c)
 
     i += 1
 
-print(mNN)
+print(minLength)
 
 #initiate variables
 j = 0
 
 #loop through neighSIndex
-while j < numPts:
-
-    bwS = neighSTIndex[j][mNN-1]
-    print(neighS[0][bwS])
-    print(neighT[0][bwS])
-
-    # for k in bwS:
-    #     # print(inXY[int(k)], )
-    #     print(neighS[1][mNN])
-
-    j += 1
+# while j < numPts:
+#
+#     bwS = neighSneighSIndex[minLength]
+#
+#     j += 1
 
