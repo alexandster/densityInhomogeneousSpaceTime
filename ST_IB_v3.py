@@ -7,10 +7,10 @@ popArr = np.loadtxt('popdata.txt',delimiter=',')
 #------------------------------------------------
 #------------------------------------------------
 # read case points file
-disFile = open('casdata.txt', "r")          #disFile = open('AllCases2010_11_clip.txt', "r")
+disFile = open('AllCases2010_11_clip.txt', "r")
 inXYT = []
 for record in disFile:
-    inXYT.append([float(record.split(",")[0]),float(record.split(",")[1]),float(record.split(",")[2])])
+    inXYT.append([float(record.split("\t")[0]),float(record.split("\t")[1]),float(record.split("\t")[2])])
 disFile.close()
 numPts = len(inXYT)
 
@@ -35,28 +35,30 @@ NN = 10            #number of nearest neighbors to search for
 i = 1              # iterator variable
 
 #loop through all data points
-while i < numPts:
-
-    # print(i)
+##while i < numPts:
+while i < 200:
+##    print(i)
 
     #query point
     sPts = inXYT_s[i,:2]
-    tPts = inXYT_s[:i,2]
+    tPts = inXYT_s[i,2]
 
+    print(sPts, tPts)
 
     #query the tree, input number of neighbors
     sNeigh = sTree.query(sPts,25)
     tNeigh = []
     current = 0
-    while current <= max(tPts):
+    while current <= tPts:
         tNeigh.append(current)
         current += 1
     # tNeigh = list(inXYT_s[:i,2])
+##    print(tNeigh)
 
     #intersect spatial and temporal neighbors
     stNeigh = np.intersect1d(list(sNeigh[1]), tNeigh)  #indices
     stNeighIndex.append(list(stNeigh))
-    print(sNeigh[1], tNeigh)
+##    print(sNeigh[1], tNeigh)
     #keep track of minimum number of spatiotemporal neighbors
     nSTN = stNeigh.size #number of space-time neighbors
     if nSTN < mNN:
@@ -64,7 +66,7 @@ while i < numPts:
 
     i += 1
 
-print(mNN)
+##print(mNN)
 ##
 #####initiate variables
 ####j = 0
