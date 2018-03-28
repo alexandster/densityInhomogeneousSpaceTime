@@ -32,12 +32,12 @@ stNeighIndex = []    #stores indexes of spatiotemporal neighbors
 
 mNN = np.inf        #minimum number of neighbors
 NN = 10            #number of nearest neighbors to search for
-i = minN              # iterator variable 
+i = 1              # iterator variable
 
 #loop through all data points
 while i < numPts:
 
-    print(i)
+    # print(i)
 
     #query point
     sPts = inXYT_s[i,:2]
@@ -45,13 +45,18 @@ while i < numPts:
 
 
     #query the tree, input number of neighbors
-    sNeigh = sTree.query(sPts,numPts)
-    tNeigh = list(inXYT_s[:i,2])
+    sNeigh = sTree.query(sPts,25)
+    tNeigh = []
+    current = 0
+    while current <= max(tPts):
+        tNeigh.append(current)
+        current += 1
+    # tNeigh = list(inXYT_s[:i,2])
 
     #intersect spatial and temporal neighbors
-    stNeigh = np.intersect1d(list(sNeigh[1]), list(range(i)))  #indices
+    stNeigh = np.intersect1d(list(sNeigh[1]), tNeigh)  #indices
     stNeighIndex.append(list(stNeigh))
-
+    print(sNeigh[1], tNeigh)
     #keep track of minimum number of spatiotemporal neighbors
     nSTN = stNeigh.size #number of space-time neighbors
     if nSTN < mNN:
@@ -59,7 +64,7 @@ while i < numPts:
 
     i += 1
 
-##print(mNN)
+print(mNN)
 ##
 #####initiate variables
 ####j = 0
