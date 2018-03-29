@@ -25,21 +25,28 @@ sTree = spatial.cKDTree(inXYT_s[:,:2])
 stNeighIndex = []    #stores indexes of spatiotemporal neighbors
 
 mNN = np.inf        #minimum number of neighbors
-NN = 10            #number of nearest neighbors to search for
-i = 65              # iterator variable
+NN = 1000            #number of nearest neighbors to search for
+i = 0              # iterator variable
 
 #loop through all data points
-# while i < numPts:
-while i < 200:
+##while i < numPts:
+while i < 300:
 
     #query point
     sCoord = inXYT_s[i,:2]
     tCoord = inXYT_s[i,2]
 
-    #query the tree, input number of neighbors
-    sNeigh = sTree.query(sCoord,3000)
+    #query the tree, input number of neighbors to search for
+    sNeigh = sTree.query(sCoord,NN)
+
+    #search for temporal neighbors
     tNeigh = []
-    current = 0
+    #number of temporal neighbors
+    if i < NN:
+        current = 0
+    else:
+        current = i - NN
+
     while inXYT_s[current,2] < inXYT_s[i,2]:
         tNeigh.append(current)
         current += 1
@@ -49,13 +56,12 @@ while i < 200:
 
     #write to file
     s = ", ".join(map(str, list(stNeigh)))
-    outFile.write(s + "\n")
+    outFile.write(str(i) + ", " + s + "\n")
 
     #keep track of minimum number of spatiotemporal neighbors
     nSTN = stNeigh.size #number of space-time neighbors
     if nSTN < mNN:
         mNN = nSTN
-    print(i, nSTN)
 
     i += 1
 
