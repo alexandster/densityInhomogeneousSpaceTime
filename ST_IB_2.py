@@ -31,22 +31,44 @@ for line in inFile:
 
 
 k = 10          #kth neighbor -- how many disease cases support one case
-i = 250         #starting point -- ensure that points have at least k neighbors
+i = 9250         #starting point -- ensure that points have at least k neighbors
+
+stNeigh = []
+stNeighDist = []
 
 #loop through inArr, find space-time distance to the kth neighbor
-while i < 270:
+while i < 9251:
 
     #center point coords
     xC, yC, tC = inArr[i][1],inArr[i][2],inArr[i][3]
 
-    #kth neighbor index
-    kI = int(inArr[i][3+k])
+    #find kth spatial neighbors
+    for j in inArr[i][4:k]:
 
-    #kth neighbor coords
-    xN, yN, tN = inXYT_s[kI,0], inXYT_s[kI,1], inXYT_s[kI,2]
+       xN, yN, tN = inXYT_s[int(j)][0], inXYT_s[int(j)][1], inXYT_s[int(j)][2]
+       
+       stNeigh.append([xN, yN, tN])
+       stNeighDist.append([pow(pow(xC - xN, 2) + pow(yC - yC, 2),0.5), tC - tN])
 
-    print(xC, yC, tC, xN, yN, tN)
+##    stNeighArr = np.array(stNeigh)
 
-    # dist =
+    #find spatial and temporal distance
+##    print(stNeighArr)
+    
+   
+    
+
+##    #kth neighbor index
+##    kI = int(inArr[i][3+k])
+##
+##    #kth neighbor coords
+##    xN, yN, tN = inXYT_s[kI,0], inXYT_s[kI,1], inXYT_s[kI,2]
+##
+####    print(xC, yC, tC, xN, yN, tN)
+##
+##    sDist = pow(pow(xC - xN, 2) + pow(yC - yN, 2), 0.5)
+##    tDist = tC - tN
+##
+##    print("center coord", xC, yC, tC, "kth neighbor coords", xN, yN, tN, "dist", sDist, tDist)
 
     i += 1
